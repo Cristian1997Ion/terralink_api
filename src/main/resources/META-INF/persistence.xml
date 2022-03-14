@@ -1,0 +1,22 @@
+<persistence
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+    "
+    version="2.2"
+>
+    <persistence-unit name="terralinkPU">
+        <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>  
+        <properties> 
+            <!-- PostgreSQL -->
+            <property name="hibernate.connection.pool_size" value="10"/>
+            <property name="javax.persistence.schema-generation.database.action" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.highlight_sql" value="true"/>     
+        </properties>    
+    </persistence-unit>
+</persistence>
