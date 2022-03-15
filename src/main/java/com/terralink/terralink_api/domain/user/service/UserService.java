@@ -15,6 +15,13 @@ public class UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
+    public Mono<User> findUserByCredentials(String username, String password) {
+        return this
+            .userRepository
+            .findByUsername(username)
+            .filter(user -> this.passwordEncoder.matches(password, user.getPassword()));
+    }
+
     public Mono<User> createUser(
         String username,
         String email,
