@@ -1,6 +1,7 @@
 package com.terralink.terralink_api.domain.auth.service;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,11 @@ public class AuthService implements ReactiveAuthenticationManager {
         return Mono.just(this.jwtService.validateTokenWithClaims(tokenClaims))
             .filter(valid -> valid)
             .switchIfEmpty(Mono.empty())
-            .map(valid -> authentication);
+            .map(valid ->  new UsernamePasswordAuthenticationToken(
+                tokenClaims.getSubject(),
+                null,
+                null
+            ));
     }
 
 
