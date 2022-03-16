@@ -2,9 +2,6 @@ package com.terralink.terralink_api.http.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.terralink.terralink_api.domain.auth.exception.BadTokenException;
-import com.terralink.terralink_api.domain.auth.exception.ExpiredTokenException;
-import com.terralink.terralink_api.domain.auth.exception.MissingTokenException;
 import com.terralink.terralink_api.domain.auth.exception.TokenException;
 
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
@@ -24,16 +21,29 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
     private ObjectMapper objectMapper;
 
     @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable exception) {
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        if (ex instanceof TokenException) {
-            return this.handleTokenException(exchange, (TokenException) ex);
+        if (exception instanceof TokenException) {
+           return this.handleTokenException(exchange, (TokenException) exception);
         }
 
-        // handle unkown exception
-        ex.printStackTrace();
-        GlobalExceptionHandler.log.error(ex.getMessage());
+        return this.handleUnkownException(exchange, exception);
+
+    }
+
+    private Mono<Void> handleTokenException(ServerWebExchange exchange, TokenException exception) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        return exchange.getResponse().writeWith(
+            Mono
+                .just(ApiResponse.create(false, exception.getMessage(), null))
+                .map(this::getJsonBytesFromData)
+                .map(exchange.getResponse().bufferFactory()::wrap)
+        );   
+    }
+
+    private Mono<Void> handleUnkownException(ServerWebExchange exchange, Throwable exception) {
+        GlobalExceptionHandler.log.error("error:", exception);
     
         exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         return exchange.getResponse().writeWith(
@@ -44,49 +54,11 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         );
     }
 
-    private Mono<Void> handleTokenException(ServerWebExchange exchange, TokenException exception) {
-        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        
-        if (exception instanceof BadTokenException) {
-            return exchange.getResponse().writeWith(
-                Mono
-                    .just(ApiResponse.create(false, "Invalid token!", null))
-                    .map(this::getJsonBytesFromData)
-                    .map(exchange.getResponse().bufferFactory()::wrap)
-            );
-        }
-
-        if (exception instanceof MissingTokenException) {
-            return exchange.getResponse().writeWith(
-                Mono
-                    .just(ApiResponse.create(false, "Missing token!", null))
-                    .map(this::getJsonBytesFromData)
-                    .map(exchange.getResponse().bufferFactory()::wrap)
-            );
-        }
-
-        if (exception instanceof ExpiredTokenException) {
-            return exchange.getResponse().writeWith(
-                Mono
-                    .just(ApiResponse.create(false, "Expired token!", null))
-                    .map(this::getJsonBytesFromData)
-                    .map(exchange.getResponse().bufferFactory()::wrap)
-            );
-        }
-
-        return exchange.getResponse().writeWith(
-            Mono
-                .just(ApiResponse.create(false, "Internal server error!", null))
-                .map(this::getJsonBytesFromData)
-                .map(exchange.getResponse().bufferFactory()::wrap)
-        );   
-    }
-
     private byte[] getJsonBytesFromData(Object data) {
         try {
             return this.objectMapper.writeValueAsBytes(data);
         } catch (JsonProcessingException e) {
-            GlobalExceptionHandler.log.error(e.getMessage());
+            GlobalExceptionHandler.log.error("jsonParserError:", e);
             return new byte[] {};
         }
     }

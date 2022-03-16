@@ -1,3 +1,7 @@
 package com.terralink.terralink_api.domain.auth.exception;
 
-public class MissingTokenException extends TokenException {}
+public final class MissingTokenException extends TokenException {
+    public MissingTokenException() {
+        super("Missing token!");
+    }
+}
