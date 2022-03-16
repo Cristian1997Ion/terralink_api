@@ -45,13 +45,4 @@ public class JWTService {
                 .signWith(this.key)
                 .compact();
     }
-
-    public Boolean validateTokenWithClaims(Claims tokenClaims) {
-        return ! this.isTokenExpired(tokenClaims);
-    }
-
-    
-    private Boolean isTokenExpired(Claims tokenClaims) {
-        return tokenClaims.getExpiration().before(new Date());
-    }
 }
