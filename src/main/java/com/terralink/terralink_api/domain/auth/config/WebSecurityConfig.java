@@ -3,6 +3,7 @@ package com.terralink.terralink_api.domain.auth.config;
 import com.terralink.terralink_api.domain.auth.service.AuthService;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -16,8 +17,8 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@Configuration
 public class WebSecurityConfig {
-
     private AuthService authService;
     private SecurityContextRepository securityContextRepository;
 

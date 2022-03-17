@@ -7,12 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public final class ApiResponse {
+public final class ApiResponse<T> {
     protected Boolean success = true;
     protected String message = null;
-    protected Object payload = null;
-
-    public static ApiResponse create(Boolean success, String message, Object payload) {
-        return new ApiResponse(success, message, payload);
-    }
+    protected T payload = null;
 }

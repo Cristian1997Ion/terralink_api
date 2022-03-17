@@ -16,10 +16,10 @@ public class AuthRouter {
     @Bean
     public RouterFunction<ServerResponse> authRoutes(LoginHandler loginHandler, RegisterHandler registerHandler) {
 
-        return RouterFunctions.route().nest(RequestPredicates.path("/auth"), builder -> {
+        return RouterFunctions.route().nest(RequestPredicates.path("/auth"), builder -> 
             builder
                 .POST("/login", loginHandler::handleRequest)
-                .POST("/register", registerHandler::handleRequest);
-        }).build();
+                .POST("/register", registerHandler::handleRequest)
+        ).build();
     }
 }

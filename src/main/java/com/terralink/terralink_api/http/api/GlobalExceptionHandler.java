@@ -46,7 +46,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         return exchange.getResponse().writeWith(
             Mono
-                .just(ApiResponse.create(false, exception.getMessage(), null))
+                .just(new ApiResponse<>(false, exception.getMessage(), null))
                 .map(this::getJsonBytesFromData)
                 .map(exchange.getResponse().bufferFactory()::wrap)
         );   
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
         return exchange.getResponse().writeWith(
             Mono
-                .just(ApiResponse.create(
+                .just(new ApiResponse<ValidationErrorPayload>(
                     false, 
                     exception.getMessage(), 
                     new ValidationErrorPayload(
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         return exchange.getResponse().writeWith(
             Mono
-                .just(ApiResponse.create(false, "Internal server error!", null))
+                .just(new ApiResponse<>(false, "Internal server error!", null))
                 .map(this::getJsonBytesFromData)
                 .map(exchange.getResponse().bufferFactory()::wrap)
         );

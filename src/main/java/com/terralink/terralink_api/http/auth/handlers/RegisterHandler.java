@@ -36,6 +36,6 @@ public class RegisterHandler extends AbstractValidationHandler<RegisterRequest, 
                 registerRequest.getPassword(),
                 true
             ))
-            .flatMap(user -> ServerResponse.status(HttpStatus.CREATED).bodyValue(new ApiResponse()));
+            .flatMap(user -> ServerResponse.status(HttpStatus.CREATED).bodyValue(new ApiResponse<>()));
     }
 }

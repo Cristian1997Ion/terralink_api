@@ -8,14 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
-@Component
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
     private AuthService authService;

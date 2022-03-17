@@ -4,6 +4,10 @@ import java.util.Properties;
 
 import javax.persistence.Persistence;
 
+import com.terralink.terralink_api.domain.auth.config.SecurityContextRepository;
+import com.terralink.terralink_api.domain.auth.service.AuthService;
+import com.terralink.terralink_api.domain.auth.service.JWTService;
+
 import org.hibernate.reactive.mutiny.Mutiny;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -47,6 +51,16 @@ public class TerralinkApiApplication {
     @Primary
     public Validator validator() {
         return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public AuthService authService() {
+        return new AuthService(new JWTService());
+    }
+
+    @Bean 
+    public SecurityContextRepository securityContextRepository(AuthService authService) {
+        return new SecurityContextRepository(authService);
     }
 
 }
