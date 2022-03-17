@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.hibernate.reactive.mutiny.Mutiny;
 
@@ -71,5 +72,26 @@ public abstract class BaseEntityRepository<T> {
             )
             .convert()
             .with(UniReactorConverters.toMono());
+    }
+
+    public Mono<Boolean> existsWithAttribute(String attribute, Object value) {
+        CriteriaBuilder criteriaBuilder =  this.sessionFactory.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<T> root = query.from(entityClass);
+        query
+            .select(criteriaBuilder.count(root.get(attribute)).alias("exists"))
+            .where(criteriaBuilder.equal(root.get(attribute), value));
+
+        return this
+            .sessionFactory
+            .withSession(session -> 
+                session
+                    .createQuery(query)
+                    .setMaxResults(1)
+                    .getSingleResultOrNull()
+            )
+            .convert()
+            .with(UniReactorConverters.toMono())
+            .map(count -> count > 0);
     }
 }

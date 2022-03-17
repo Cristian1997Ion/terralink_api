@@ -29,7 +29,7 @@ public class UserRepository extends BaseEntityRepository<User> {
 
         return this
             .sessionFactory
-            .withSession(session -> session.createQuery(query).getSingleResult())
+            .withSession(session -> session.createQuery(query).getSingleResultOrNull())
             .convert()
             .with(UniReactorConverters.toMono());
 

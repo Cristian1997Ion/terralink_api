@@ -1,5 +1,7 @@
 package com.terralink.terralink_api.domain.user.service;
 
+import java.util.Objects;
+
 import com.terralink.terralink_api.domain.user.entity.User;
 import com.terralink.terralink_api.domain.user.repository.UserRepository;
 
@@ -19,6 +21,7 @@ public class UserService {
         return this
             .userRepository
             .findByUsername(username)
+            .filter(Objects::nonNull)
             .filter(user -> this.passwordEncoder.matches(password, user.getPassword()));
     }
 
