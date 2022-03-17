@@ -94,7 +94,7 @@ public class RegisterTests {
            ApiResponse<?> response = exchangeResult.getResponseBody();
            assert response != null;
            assert ! response.getSuccess();
-           assert response.getMessage().equals((new ValidationException(List.of())).getMessage());
+           assert response.getMessage().equals(ValidationException.DEFAULT_ERROR_MESSAGE);
         });
     }
 
@@ -123,7 +123,7 @@ public class RegisterTests {
            ApiResponse<?> response = exchangeResult.getResponseBody();
            assert response != null;
            assert ! response.getSuccess();
-           assert response.getMessage().equals((new ValidationException(List.of())).getMessage());
+           assert response.getMessage().equals(ValidationException.DEFAULT_ERROR_MESSAGE);
         });
     }
 
@@ -148,7 +148,7 @@ public class RegisterTests {
                ApiResponse<?> response = exchangeResult.getResponseBody();
                assert response != null;
                assert ! response.getSuccess();
-               assert response.getMessage().equals((new ValidationException(List.of())).getMessage());
+               assert response.getMessage().equals(ValidationException.DEFAULT_ERROR_MESSAGE);
             });
     }
 
@@ -173,7 +173,7 @@ public class RegisterTests {
                ApiResponse<?> response = exchangeResult.getResponseBody();
                assert response != null;
                assert ! response.getSuccess();
-               assert response.getMessage().equals((new ValidationException(List.of())).getMessage());
+               assert response.getMessage().equals(ValidationException.DEFAULT_ERROR_MESSAGE);
             });
     }
 
@@ -198,7 +198,7 @@ public class RegisterTests {
                ApiResponse<?> response = exchangeResult.getResponseBody();
                assert response != null;
                assert ! response.getSuccess();
-               assert response.getMessage().equals((new ValidationException(List.of())).getMessage());
+               assert response.getMessage().equals(ValidationException.DEFAULT_ERROR_MESSAGE);
             });
     }
 
