@@ -1,6 +1,7 @@
 package com.terralink.terralink_api.http.auth.handlers;
 
 import com.terralink.terralink_api.domain.auth.service.JWTService;
+import com.terralink.terralink_api.domain.shared.validation.exception.ValidationException;
 import com.terralink.terralink_api.domain.user.service.UserService;
 import com.terralink.terralink_api.http.api.ApiResponse;
 import com.terralink.terralink_api.http.api.validation.AbstractValidationHandler;
@@ -34,6 +35,12 @@ public class LoginHandler extends AbstractValidationHandler<LoginRequest, Valida
         return Mono
             .just(validLoginRequest)
             .flatMap(loginRequest -> this.userService.findUserByCredentials(loginRequest.getUsername(), loginRequest.getPassword()))
+            .switchIfEmpty(Mono.error(
+                new ValidationException(
+                    LoginRequest.class,
+                    "Invalid credentials"
+                )
+            ))
             .flatMap(user -> ServerResponse.ok().bodyValue(
                 new ApiResponse(true, null, new LoginPayload(user.getUsername(), jwtService.generateToken(user)))
             ));

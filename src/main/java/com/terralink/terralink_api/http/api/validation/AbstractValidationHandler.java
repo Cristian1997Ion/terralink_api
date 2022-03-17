@@ -1,12 +1,9 @@
 package com.terralink.terralink_api.http.api.validation;
 
-import java.util.List;
-
 import com.terralink.terralink_api.domain.shared.validation.exception.ValidationException;
 
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -25,9 +22,12 @@ public abstract class AbstractValidationHandler<T, U extends Validator> {
     public final Mono<ServerResponse> handleRequest(final ServerRequest request) {
         return request
             .bodyToMono(this.validationClass)
-            .switchIfEmpty(Mono.error(new ValidationException(
-                List.of(new ObjectError(this.validationClass.getName(), "Invalid request body!"))
-            )))
+            .switchIfEmpty(Mono.error(
+                new ValidationException(
+                    this.validationClass,
+                    "Invalid request body!"
+                )
+            ))
             .flatMap(body -> {
                 Errors errors = new BeanPropertyBindingResult(
                     body,

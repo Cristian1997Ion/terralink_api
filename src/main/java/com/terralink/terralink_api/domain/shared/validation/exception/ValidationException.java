@@ -14,4 +14,9 @@ public class ValidationException extends Exception{
         super("Validation error!");
         this.violations = violations;
     }
+
+    public ValidationException(Class<?> objectClass, String message) {
+        super("Validation error");
+        this.violations = List.of(new ObjectError(objectClass.getName(), message));
+    }
 }
