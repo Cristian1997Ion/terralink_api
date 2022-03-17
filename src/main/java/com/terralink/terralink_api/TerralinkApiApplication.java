@@ -10,10 +10,12 @@ import com.terralink.terralink_api.domain.auth.service.JWTService;
 
 import org.hibernate.reactive.mutiny.Mutiny;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Validator;
@@ -43,6 +45,7 @@ public class TerralinkApiApplication {
     }
 
     @Bean
+    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -54,11 +57,13 @@ public class TerralinkApiApplication {
     }
 
     @Bean
-    public AuthService authService() {
-        return new AuthService(new JWTService());
+    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public AuthService authService(JWTService jwtService) {
+        return new AuthService(jwtService);
     }
 
-    @Bean 
+    @Bean
+    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public SecurityContextRepository securityContextRepository(AuthService authService) {
         return new SecurityContextRepository(authService);
     }
