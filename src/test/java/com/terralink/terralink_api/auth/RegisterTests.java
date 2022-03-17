@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import com.terralink.terralink_api.TerralinkApiApplication;
 import com.terralink.terralink_api.domain.auth.config.WebSecurityConfig;
 import com.terralink.terralink_api.domain.shared.validation.exception.ValidationException;
