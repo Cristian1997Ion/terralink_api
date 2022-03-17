@@ -1,13 +1,19 @@
 package com.terralink.terralink_api.http.api;
 
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terralink.terralink_api.domain.auth.exception.TokenException;
+import com.terralink.terralink_api.domain.shared.validation.exception.ValidationException;
+import com.terralink.terralink_api.http.api.validation.ValidationErrorPayload;
 
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.server.ServerWebExchange;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +34,10 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
            return this.handleTokenException(exchange, (TokenException) exception);
         }
 
+        if (exception instanceof ValidationException) {
+            return this.handleValidationException(exchange, (ValidationException) exception);
+        }
+
         return this.handleUnkownException(exchange, exception);
 
     }
@@ -40,6 +50,32 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
                 .map(this::getJsonBytesFromData)
                 .map(exchange.getResponse().bufferFactory()::wrap)
         );   
+    }
+
+    private Mono<Void> handleValidationException(ServerWebExchange exchange, ValidationException exception) {
+        exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+        return exchange.getResponse().writeWith(
+            Mono
+                .just(ApiResponse.create(
+                    false, 
+                    exception.getMessage(), 
+                    new ValidationErrorPayload(
+                        exception
+                            .getViolations()
+                            .stream()
+                            .filter(violation -> violation instanceof ObjectError && ! (violation instanceof FieldError))
+                            .collect(Collectors.toList()),
+                        exception
+                            .getViolations()
+                            .stream()
+                            .filter(FieldError.class::isInstance)
+                            .map(FieldError.class::cast)
+                            .collect(Collectors.toList())
+                    )
+                ))
+                .map(this::getJsonBytesFromData)
+                .map(exchange.getResponse().bufferFactory()::wrap)
+        ); 
     }
 
     private Mono<Void> handleUnkownException(ServerWebExchange exchange, Throwable exception) {

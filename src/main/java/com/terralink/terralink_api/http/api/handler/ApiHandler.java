@@ -1,4 +1,6 @@
-package com.terralink.terralink_api.http.api;
+package com.terralink.terralink_api.http.api.handler;
+
+import com.terralink.terralink_api.http.api.ApiResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

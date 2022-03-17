@@ -26,9 +26,11 @@ public class UniqueFieldValidator implements ConstraintValidator<Unique, Object>
     @Override
     public boolean isValid(Object object, ConstraintValidatorContext constraintValidatorContext) {
         try{
-            return ! this.entityRepository.existsWithAttribute(this.entityField, object).toFuture().get();
+            return !this.entityRepository.existsWithAttribute(this.entityField, (object != null ? object : "")).toFuture().get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
