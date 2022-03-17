@@ -42,7 +42,7 @@ public class LoginHandler extends AbstractValidationHandler<LoginRequest, Valida
                 )
             ))
             .flatMap(user -> ServerResponse.ok().bodyValue(
-                new ApiResponse<>(true, null, new LoginPayload(user.getUsername(), jwtService.generateToken(user)))
+                new ApiResponse<LoginPayload>(true, null, new LoginPayload(user.getUsername(), jwtService.generateToken(user)))
             ));
     }
 }
