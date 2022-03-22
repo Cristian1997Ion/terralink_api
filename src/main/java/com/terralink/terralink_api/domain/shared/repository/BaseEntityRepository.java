@@ -94,4 +94,5 @@ public abstract class BaseEntityRepository<T> {
             .with(UniReactorConverters.toMono())
             .map(count -> count > 0);
     }
+
 }
