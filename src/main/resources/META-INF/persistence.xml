@@ -13,7 +13,7 @@
         <properties> 
             <!-- PostgreSQL -->
             <property name="hibernate.connection.pool_size" value="10"/>
-            <property name="javax.persistence.schema-generation.database.action" value="update"/>
+            <property name="javax.persistence.schema-generation.database.action" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.highlight_sql" value="true"/>     

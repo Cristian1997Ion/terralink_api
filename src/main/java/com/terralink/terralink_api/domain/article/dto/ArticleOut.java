@@ -1,10 +1,12 @@
 package com.terralink.terralink_api.domain.article.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.ToString;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
+@Data
 public class ArticleOut {
     private Integer articleId;
 

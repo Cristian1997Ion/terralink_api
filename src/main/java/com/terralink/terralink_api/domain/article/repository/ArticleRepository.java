@@ -6,6 +6,7 @@ import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import com.terralink.terralink_api.domain.article.dto.ArticleOut;
@@ -32,8 +33,8 @@ public class ArticleRepository extends BaseEntityRepository<Article> {
         CriteriaBuilder cb = this.sessionFactory.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Article> root = query.from(Article.class);
-        Join<Article, User> likedByJoin = root.join(Article_.likedBy);
-        Join<Article, User> authorJoin = root.join(Article_.author);
+        Join<Article, User> likedByJoin = root.join(Article_.likedBy, JoinType.LEFT);
+        Join<Article, User> authorJoin = root.join(Article_.author, JoinType.LEFT);
         String numberOfLikesColumn = "number_of_likes";
 
         query
