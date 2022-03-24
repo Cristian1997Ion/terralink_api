@@ -1,7 +1,7 @@
 package com.terralink.terralink_api.http.auth;
 
-import com.terralink.terralink_api.http.auth.handlers.LoginHandler;
-import com.terralink.terralink_api.http.auth.handlers.RegisterHandler;
+import com.terralink.terralink_api.http.auth.handler.LoginHandler;
+import com.terralink.terralink_api.http.auth.handler.RegisterHandler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

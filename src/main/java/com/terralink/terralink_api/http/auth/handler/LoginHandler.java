@@ -1,4 +1,4 @@
-package com.terralink.terralink_api.http.auth.handlers;
+package com.terralink.terralink_api.http.auth.handler;
 
 import com.terralink.terralink_api.domain.auth.service.JWTService;
 import com.terralink.terralink_api.domain.shared.validation.exception.ValidationException;
