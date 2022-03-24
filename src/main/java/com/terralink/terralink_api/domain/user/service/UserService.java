@@ -25,6 +25,13 @@ public class UserService {
             .filter(user -> this.passwordEncoder.matches(password, user.getPassword()));
     }
 
+    public Mono<User> findByUsername(String username) {
+        return this
+            .userRepository
+            .findByUsername(username)
+            .filter(Objects::nonNull);
+    }
+
     public Mono<User> createUser(
         String username,
         String email,

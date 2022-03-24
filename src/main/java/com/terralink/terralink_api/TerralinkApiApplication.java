@@ -7,6 +7,7 @@ import javax.persistence.Persistence;
 import com.terralink.terralink_api.domain.auth.config.SecurityContextRepository;
 import com.terralink.terralink_api.domain.auth.service.AuthService;
 import com.terralink.terralink_api.domain.auth.service.JWTService;
+import com.terralink.terralink_api.domain.user.service.UserService;
 
 import org.hibernate.reactive.mutiny.Mutiny;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class TerralinkApiApplication {
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public AuthService authService(JWTService jwtService) {
-        return new AuthService(jwtService);
+    public AuthService authService(JWTService jwtService, UserService userService) {
+        return new AuthService(jwtService, userService);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.terralink.terralink_api.domain.auth.service;
 import com.terralink.terralink_api.domain.auth.exception.BadTokenException;
 import com.terralink.terralink_api.domain.auth.exception.ExpiredTokenException;
 import com.terralink.terralink_api.domain.auth.exception.MissingTokenException;
+import com.terralink.terralink_api.domain.user.service.UserService;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,8 @@ import reactor.core.publisher.Mono;
 public class AuthService implements ReactiveAuthenticationManager {
     private JWTService jwtService;
 
+    private UserService userService;
+
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono
@@ -26,8 +29,10 @@ public class AuthService implements ReactiveAuthenticationManager {
             .map(token -> this.jwtService.getAllClaimsFromToken(token))
             .onErrorResume(ExpiredJwtException.class, error -> Mono.error(new ExpiredTokenException()))
             .onErrorResume(JwtException.class, error -> Mono.error(new BadTokenException()))
-            .map(claims ->  (Authentication) new UsernamePasswordAuthenticationToken(
-                claims.getSubject(),
+            .flatMap(claims -> this.userService.findByUsername(claims.getSubject()))
+            .switchIfEmpty(Mono.error(new BadTokenException()))
+            .map(user ->  (Authentication) new UsernamePasswordAuthenticationToken(
+                user,
                 null,
                 null
             ));
