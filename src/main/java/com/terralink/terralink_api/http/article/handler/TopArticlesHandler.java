@@ -1,4 +1,4 @@
-package com.terralink.terralink_api.http.article.handlers;
+package com.terralink.terralink_api.http.article.handler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
