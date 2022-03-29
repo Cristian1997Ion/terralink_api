@@ -25,17 +25,18 @@ public class RegisterHandler extends AbstractValidationHandler<RegisterRequest, 
 
     @Override
     protected Mono<ServerResponse> processBody(
-        RegisterRequest validLoginRequest,
+        RegisterRequest validRequest,
         ServerRequest originalRequest
     ) {
-        return Mono
-            .just(validLoginRequest)
-            .flatMap(registerRequest -> this.userService.createUser(
-                registerRequest.getUsername(),
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
+
+        return this.userService
+            .createUser(
+                validRequest.getUsername(),
+                validRequest.getEmail(),
+                validRequest.getPassword(),
                 true
-            ))
-            .flatMap(user -> ServerResponse.status(HttpStatus.CREATED).bodyValue(new ApiResponse<>()));
+            ).flatMap(user -> 
+                ServerResponse.status(HttpStatus.CREATED).bodyValue(new ApiResponse<>())
+            );
     }
 }
