@@ -1,7 +1,7 @@
 package com.terralink.terralink_api.http.article;
 
 import com.terralink.terralink_api.http.article.handler.CreateArticleHandler;
-import com.terralink.terralink_api.http.article.handler.TopArticlesHandler;
+import com.terralink.terralink_api.http.article.handler.MixedArticlesHandler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +14,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class ArticleRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> articleRoutes (TopArticlesHandler topArticlesHandler, CreateArticleHandler createArticleHandler) {
+    public RouterFunction<ServerResponse> articleRoutes (MixedArticlesHandler mixedArticlesHandler, CreateArticleHandler createArticleHandler) {
         return RouterFunctions.route().nest(RequestPredicates.path("/article"), builder -> 
             builder
-                .GET("/top", topArticlesHandler::handleRequest)
+                .GET("/mixed", mixedArticlesHandler::handleRequest)
                 .POST("/create", createArticleHandler::handleRequest)
         ).build();
     }
