@@ -39,7 +39,7 @@ public class Article {
     private String title;
 
     @Getter
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne()
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
 
@@ -47,6 +47,7 @@ public class Article {
     @Column(length = 20, nullable = false)
     private String content;
 
+    @Getter
     @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
         name = "article_like", 

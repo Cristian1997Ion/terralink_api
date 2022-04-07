@@ -6,6 +6,7 @@ import java.util.Set;
 import com.terralink.terralink_api.domain.article.dto.ArticleOut;
 import com.terralink.terralink_api.domain.article.entity.Article;
 import com.terralink.terralink_api.domain.article.repository.ArticleRepository;
+import com.terralink.terralink_api.domain.shared.exception.NotFoundException;
 import com.terralink.terralink_api.domain.user.entity.User;
 
 import org.springframework.stereotype.Component;
@@ -52,6 +53,21 @@ public class ArticleService {
 
     public Flux<ArticleOut> getArticleFeed() {
         return this.articleFeedSink.asFlux();
+    }
+
+    public Mono<Boolean> likeArticleById(User likedBy, Integer articleId) {
+       return this.articleRepository
+            .findByIdWithLikes(articleId)
+            .switchIfEmpty(Mono.error(new NotFoundException(Article.class.getCanonicalName(), articleId.toString())))
+            .flatMap(article -> {
+                if (article.getLikedBy().add(likedBy)) {
+                    return this.articleRepository
+                        .update(article)
+                        .map(savedArticle -> true);
+                }
+        
+                return Mono.just(true);
+            });
     }
     
 }

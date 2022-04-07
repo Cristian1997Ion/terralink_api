@@ -71,4 +71,21 @@ public class ArticleRepository extends BaseEntityRepository<Article> {
                     .collect(Collectors.toList())
             ));
     }
+
+    public Mono<Article> findByIdWithLikes(Object articleId) {
+        CriteriaBuilder cb = this.sessionFactory.getCriteriaBuilder();
+        CriteriaQuery<Article> query = cb.createQuery(Article.class);
+        Root<Article> root = query.from(Article.class);
+
+        root.fetch(Article_.likedBy, JoinType.LEFT);
+        query
+            .select(root)
+            .where(cb.equal(root.get(User_.ID), articleId));
+
+        return this
+            .sessionFactory
+            .withSession(session -> session.createQuery(query).getSingleResultOrNull())
+            .convert()
+            .with(UniReactorConverters.toMono());
+    }
 }

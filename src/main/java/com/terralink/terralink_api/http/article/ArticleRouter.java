@@ -2,6 +2,7 @@ package com.terralink.terralink_api.http.article;
 
 import com.terralink.terralink_api.http.article.handler.ArticleFeedHandler;
 import com.terralink.terralink_api.http.article.handler.CreateArticleHandler;
+import com.terralink.terralink_api.http.article.handler.LikeArticleHandler;
 import com.terralink.terralink_api.http.article.handler.MixedArticlesHandler;
 
 import org.springframework.context.annotation.Bean;
@@ -18,13 +19,15 @@ public class ArticleRouter {
     public RouterFunction<ServerResponse> articleRoutes (
         ArticleFeedHandler articleFeedHandler,
         MixedArticlesHandler mixedArticlesHandler,
-        CreateArticleHandler createArticleHandler
+        CreateArticleHandler createArticleHandler,
+        LikeArticleHandler likeArticleHandler
     ) {
         return RouterFunctions.route().nest(RequestPredicates.path("/article"), builder -> 
             builder
                 .GET("/feed", articleFeedHandler::handleRequest)
                 .GET("/mixed", mixedArticlesHandler::handleRequest)
                 .POST("/create", createArticleHandler::handleRequest)
+                .POST("/{id}/like", likeArticleHandler::handleRequest)
         ).build();
     }
 }
