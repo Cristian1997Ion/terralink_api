@@ -14,7 +14,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class ArticleRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> articleRoutes (MixedArticlesHandler mixedArticlesHandler, CreateArticleHandler createArticleHandler) {
+    public RouterFunction<ServerResponse> articleRoutes (
+        MixedArticlesHandler mixedArticlesHandler,
+        CreateArticleHandler createArticleHandler
+    ) {
         return RouterFunctions.route().nest(RequestPredicates.path("/article"), builder -> 
             builder
                 .GET("/mixed", mixedArticlesHandler::handleRequest)
