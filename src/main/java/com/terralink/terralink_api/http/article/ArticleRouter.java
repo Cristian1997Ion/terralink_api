@@ -1,5 +1,6 @@
 package com.terralink.terralink_api.http.article;
 
+import com.terralink.terralink_api.http.article.handler.ArticleFeedHandler;
 import com.terralink.terralink_api.http.article.handler.CreateArticleHandler;
 import com.terralink.terralink_api.http.article.handler.MixedArticlesHandler;
 
@@ -15,11 +16,13 @@ public class ArticleRouter {
 
     @Bean
     public RouterFunction<ServerResponse> articleRoutes (
+        ArticleFeedHandler articleFeedHandler,
         MixedArticlesHandler mixedArticlesHandler,
         CreateArticleHandler createArticleHandler
     ) {
         return RouterFunctions.route().nest(RequestPredicates.path("/article"), builder -> 
             builder
+                .GET("/feed", articleFeedHandler::handleRequest)
                 .GET("/mixed", mixedArticlesHandler::handleRequest)
                 .POST("/create", createArticleHandler::handleRequest)
         ).build();

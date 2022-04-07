@@ -10,13 +10,19 @@ import com.terralink.terralink_api.domain.user.entity.User;
 
 import org.springframework.stereotype.Component;
 
-import lombok.AllArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 @Component
-@AllArgsConstructor
 public class ArticleService {
     private ArticleRepository articleRepository;
+    private Sinks.Many<ArticleOut> articleFeedSink;
+
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+        this.articleFeedSink = Sinks.many().multicast().directAllOrNothing();
+    }
 
     public Mono<List<ArticleOut>> getTopInternalArticles() {
         return this.articleRepository.findTopArticles(10);
@@ -33,7 +39,19 @@ public class ArticleService {
             author,
             content,
             Set.of()
-        ));
+        )).doOnSuccess(article -> {
+            this.articleFeedSink.tryEmitNext(new ArticleOut(
+                article.getId(),
+                article.getAuthor().getUsername(),
+                article.getTitle(),
+                article.getContent(),
+                (long) 0
+            ));
+        });
+    }
+
+    public Flux<ArticleOut> getArticleFeed() {
+        return this.articleFeedSink.asFlux();
     }
     
 }
