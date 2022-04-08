@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CreateArticleRequest {
     @NotNull
     @Size(min = 4, max = 32)
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "must be alphanumerical")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "must be alphanumerical")
     private String title;
 
     @NotNull

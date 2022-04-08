@@ -3,7 +3,6 @@ package com.terralink.terralink_api.domain.article.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,7 +47,7 @@ public class Article {
     private String content;
 
     @Getter
-    @ManyToMany(cascade = { CascadeType.MERGE })
+    @ManyToMany()
     @JoinTable(
         name = "article_like", 
         joinColumns = { @JoinColumn(name = "article_id") }, 

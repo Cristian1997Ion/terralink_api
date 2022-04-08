@@ -37,4 +37,26 @@ public class MixedArticlesHandler {
 
         return ServerResponse.ok().body(responseMono, ApiResponse.class);
     }
+
+    public Mono<ServerResponse> handleRequestBad(ServerRequest request) {
+        Mono<ApiResponse<MixedArticlesPayload>> responseMono = this.articleService
+            .getTopInternalArticles()
+            .flatMap(internalArticles ->
+                this.nytGateway
+                    .getRecentNews(NYTCategory.FOOD)
+                    .flatMap(nytFoodArticles ->
+                        this.nytGateway
+                            .getRecentNews(NYTCategory.HEALTH)
+                            .map(nytHealthArticles -> 
+                                new MixedArticlesPayload(
+                                    internalArticles,
+                                    nytFoodArticles.getArticles().subList(0, 5),
+                                    nytHealthArticles.getArticles().subList(0, 5)
+                                )
+                            )
+                    ).map(payload -> new ApiResponse<MixedArticlesPayload>(true, null, payload))
+            );
+        
+            return ServerResponse.ok().body(responseMono, ApiResponse.class);
+    }
 }
